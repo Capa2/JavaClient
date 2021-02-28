@@ -3,10 +3,10 @@ import java.net.Socket;
 import java.util.Stack;
 
 public class Client implements Runnable {
-    Socket socket;
-    Stack<String> pulls;
-    Thread puller;
-    Thread pusher;
+    private volatile Socket socket;
+    private volatile Stack<String> pulls;
+    private Thread puller;
+    private Thread pusher;
 
     public Client(String address, int port) {
         System.out.println("Waiting for server...");
@@ -26,11 +26,13 @@ public class Client implements Runnable {
         puller.start();
         pusher.start();
         while (!socket.isClosed()) {
-            while (!pulls.empty()) {
-                System.out.println(pulls.pop());
+            synchronized (pulls) {
+                while (!pulls.empty()) {
+                    System.out.println(pulls.pop());
+                }
             }
             if (puller.getState() == Thread.State.TERMINATED ||
-                pusher.getState() == Thread.State.TERMINATED) {
+                    pusher.getState() == Thread.State.TERMINATED) {
                 try {
                     socket.close();
                 } catch (IOException e) {
