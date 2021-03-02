@@ -16,6 +16,7 @@ public class Pusher implements Runnable, Closeable {
             out = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
+            close();
         } finally {
             scan = new Scanner(new BufferedInputStream(System.in));
         }
@@ -32,6 +33,7 @@ public class Pusher implements Runnable, Closeable {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                close();
             }
         }
     }
