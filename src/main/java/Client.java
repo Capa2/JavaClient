@@ -5,8 +5,8 @@ import java.util.Stack;
 public class Client implements Runnable {
     private volatile Socket socket;
     private volatile Stack<String> pulls;
-    private Thread puller;
-    private Thread pusher;
+    final private Thread puller;
+    final private Thread pusher;
 
     public Client(String address, int port) {
         System.out.println("Waiting for server...");
@@ -32,7 +32,7 @@ public class Client implements Runnable {
                 }
             }
             if (puller.getState() == Thread.State.TERMINATED ||
-                    pusher.getState() == Thread.State.TERMINATED) {
+                pusher.getState() == Thread.State.TERMINATED) {
                 try {
                     socket.close();
                 } catch (IOException e) {
